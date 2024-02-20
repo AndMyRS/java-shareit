@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,17 +20,19 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
+    private static final String HEADER = "X-Sharer-User-Id";
+
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto addItem(@Valid @RequestHeader("X-Sharer-User-Id") long ownerId,
+    public ItemDto addItem(@Valid @RequestHeader(HEADER) long ownerId,
             @Valid @RequestBody ItemDto itemDto) {
         log.info("Got a request to add item {}", itemDto);
         return itemService.addItem(itemDto, ownerId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@Valid @RequestHeader("X-Sharer-User-Id") long ownerId,
+    public ItemDto updateItem(@Valid @RequestHeader(HEADER) long ownerId,
                               @PathVariable Long itemId,
                               @RequestBody ItemDto itemDto) {
         log.info("Got a request to update item {}", itemDto);
@@ -38,14 +40,14 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@Valid @RequestHeader("X-Sharer-User-Id") long ownerId,
+    public ItemDto getItem(@Valid @RequestHeader(HEADER) long ownerId,
                            @PathVariable Long itemId) {
         log.info("Got a request for item with id {}", itemId);
         return itemService.getItem(ownerId, itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") long ownerId) {
+    public List<ItemDto> getItemsByOwner(@RequestHeader(HEADER) long ownerId) {
         log.info("Got a request for all items of user with id {}", ownerId);
         return itemService.getItemsByOwner(ownerId);
     }
